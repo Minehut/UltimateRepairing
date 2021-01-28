@@ -12,9 +12,6 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -33,30 +30,25 @@ public class Methods {
     }
 
     public static int getCost(RepairType type, ItemStack item) {
-        try {
-
-            ScriptEngineManager mgr = new ScriptEngineManager(null);
-            ScriptEngine engine = mgr.getEngineByName("JavaScript");
-
             String equationXP = Settings.EXPERIENCE_EQUATION.getString();
             String equationECO = Settings.ECONOMY_EQUATION.getString();
             String equationITEM = Settings.ITEM_EQUATION.getString();
 
             equationXP = equationXP.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
                     .replace("{Durability}", Short.toString(item.getDurability()));
-            int XPCost = (int) Math.round(Double.parseDouble(engine.eval(equationXP).toString()));
+            int XPCost = (int) Math.round(Double.parseDouble(equationXP));
 
             equationECO = equationECO.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
                     .replace("{Durability}", Short.toString(item.getDurability()))
                     .replace("{XPCost}", Integer.toString(XPCost));
 
-            int ECOCost = (int) Math.round(Double.parseDouble(engine.eval(equationECO).toString()));
+            int ECOCost = (int) Math.round(Double.parseDouble(equationECO));
 
             equationITEM = equationITEM.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
                     .replace("{Durability}", Short.toString(item.getDurability()))
                     .replace("{XPCost}", Integer.toString(XPCost));
 
-            int ITEMCost = (int) Math.round(Double.parseDouble(engine.eval(equationITEM).toString()));
+            int ITEMCost = (int) Math.round(Double.parseDouble(equationITEM));
 
             if (item.hasItemMeta() &&
                     item.getItemMeta().hasEnchants()) {
@@ -72,9 +64,6 @@ public class Methods {
                 return ITEMCost;
             else if (type == RepairType.ECONOMY)
                 return ECOCost;
-        } catch (ScriptException e) {
-            e.printStackTrace();
-        }
         return 9999999;
     }
 
